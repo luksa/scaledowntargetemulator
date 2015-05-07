@@ -1,0 +1,26 @@
+{
+  "id": "scaledown-pod",
+  "kind": "Pod",
+  "apiVersion": "v1beta2",
+  "namespace": "mluksa",
+  "labels": {
+    "component": "scaledown-pod"
+  },
+  "desiredState": {
+    "manifest": {
+      "version": "v1beta1",
+      "id": "scaledown-pod",
+      "labels": [
+        {
+          "component": "scaledown-pod"
+        }
+      ],
+      "containers": [
+        {
+          "name": "scaledown-container",
+          "image": "luksa/scaledowntargetemulator:latest"
+        }
+      ]
+    }
+  }
+}
