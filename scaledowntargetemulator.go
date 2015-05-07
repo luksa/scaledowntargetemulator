@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"log"
+	"time"
 )
 
 var health string = "ok"
@@ -23,6 +24,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
+func exitHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Exiting with exit code 0")
+	go func() {
+		time.Sleep(1000)
+		os.Exit(0)
+	}()
+}
+
+
 func addSignalTrap() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc)
@@ -38,5 +48,6 @@ func main() {
 	addSignalTrap()
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/health", healthHandler)
+	http.HandleFunc("/exit", exitHandler)
 	http.ListenAndServe(":8080", nil)
 }
