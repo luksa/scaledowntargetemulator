@@ -12,7 +12,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
-func main() {
+func addSignalTrap() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc)
 	go func() {
@@ -21,7 +21,10 @@ func main() {
 			log.Printf("Received signal %q", s)
 		}
 	}()
+}
 
+func main() {
+	addSignalTrap()
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8080", nil)
 }
