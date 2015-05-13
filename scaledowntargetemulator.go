@@ -25,9 +25,22 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func exitHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Exiting with exit code 0")
+	r.ParseForm()
+	var delay time.Duration
+	delayStr := r.Form.Get("delay")
+	if delayStr == "" {
+		delay = time.Second
+	} else {
+		var err error
+		delay, err = time.ParseDuration(delayStr)
+		if err != nil {
+			delay = time.Second
+		}
+	}
+	fmt.Fprintf(w, "Exiting with exit code 0 after %f", delay.Seconds())
+
 	go func() {
-		time.Sleep(1000)
+		time.Sleep(delay)
 		os.Exit(0)
 	}()
 }
