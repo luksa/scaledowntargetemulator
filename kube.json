@@ -18,7 +18,15 @@
       "containers": [
         {
           "name": "scaledown-container",
-          "image": "luksa/scaledowntargetemulator:latest"
+          "image": "luksa/scaledowntargetemulator:latest",
+          "lifecycle": {
+            "preStop": {
+              "httpGet": {
+                "path": "/preStop",
+                "port": 8080
+              }
+            }
+          }
         }
       ]
     }

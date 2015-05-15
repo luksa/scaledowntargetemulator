@@ -45,6 +45,24 @@ func exitHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 }
 
+func preStopHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	var delay time.Duration
+	delayStr := r.Form.Get("delay")
+	if delayStr == "" {
+		delay = time.Second
+	} else {
+		var err error
+		delay, err = time.ParseDuration(delayStr)
+		if err != nil {
+			delay = time.Second
+		}
+	}
+	fmt.Fprintf(w, "preStop handler invoked; waiting for %f", delay.Seconds())
+
+	time.Sleep(delay)
+}
+
 
 func addSignalTrap() {
 	sigc := make(chan os.Signal, 1)
@@ -62,5 +80,6 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/exit", exitHandler)
+	http.HandleFunc("/preStop", preStopHandler)
 	http.ListenAndServe(":8080", nil)
 }
