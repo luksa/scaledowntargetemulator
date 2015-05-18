@@ -16,11 +16,15 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	newHealth := r.Form.Get("value")
 	if newHealth != "" {
 		health = newHealth
+		log.Printf("Health changed to %q", health)
+	} else {
+		log.Printf("Health requested. Returning '%q'", health)
 	}
 	w.Write([]byte(health))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Default handler invoked")
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
@@ -37,10 +41,12 @@ func exitHandler(w http.ResponseWriter, r *http.Request) {
 			delay = time.Second
 		}
 	}
-	fmt.Fprintf(w, "Exiting with exit code 0 after %f", delay.Seconds())
+	log.Printf("Exiting with exit code 0 after %q s", delay.Seconds())
+	fmt.Fprintf(w, "Exiting with exit code 0 after %f s", delay.Seconds())
 
 	go func() {
 		time.Sleep(delay)
+		log.Printf("Exiting now")
 		os.Exit(0)
 	}()
 }
@@ -58,7 +64,8 @@ func preStopHandler(w http.ResponseWriter, r *http.Request) {
 			delay = time.Second
 		}
 	}
-	fmt.Fprintf(w, "preStop handler invoked; waiting for %f", delay.Seconds())
+	log.Printf("PreStop handler invoked. The HTTP response will be returned in %q s", delay.Seconds())
+	fmt.Fprintf(w, "preStop handler invoked; waiting for %f s", delay.Seconds())
 
 	time.Sleep(delay)
 }
@@ -76,6 +83,7 @@ func addSignalTrap() {
 }
 
 func main() {
+	log.Printf("ScaleDownTargetEmulator listening on port 8080")
 	addSignalTrap()
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/health", healthHandler)
