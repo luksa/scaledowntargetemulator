@@ -78,8 +78,8 @@ func networkCheckHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Error performing GET request on www.google.com: %q", err)
 	}
 
-	log.Printf("HTTP status code returned by www.google.com: %q", resp.StatusCode)
-	fmt.Fprintf(w, "HTTP status code returned by www.google.com: %q", resp.StatusCode)
+	log.Printf("HTTP status code returned by www.google.com: %d", resp.StatusCode)
+	fmt.Fprintf(w, "HTTP status code returned by www.google.com: %d", resp.StatusCode)
 }
 
 
