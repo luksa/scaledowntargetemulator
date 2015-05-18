@@ -70,6 +70,18 @@ func preStopHandler(w http.ResponseWriter, r *http.Request) {
 	time.Sleep(delay)
 }
 
+func networkCheckHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Checking network connectivity: performing GET on http://www.google.com")
+	resp, err := http.DefaultClient.Get("http://www.google.com")
+	if (err != nil) {
+		log.Printf("Error performing GET request on www.google.com: %q", err)
+		fmt.Fprintf(w, "Error performing GET request on www.google.com: %q", err)
+	}
+
+	log.Printf("HTTP status code returned by www.google.com: %q", resp.StatusCode)
+	fmt.Fprintf(w, "HTTP status code returned by www.google.com: %q", resp.StatusCode)
+}
+
 
 func addSignalTrap() {
 	sigc := make(chan os.Signal, 1)
@@ -89,5 +101,6 @@ func main() {
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/exit", exitHandler)
 	http.HandleFunc("/preStop", preStopHandler)
+	http.HandleFunc("/checkNetwork", networkCheckHandler)
 	http.ListenAndServe(":8080", nil)
 }
