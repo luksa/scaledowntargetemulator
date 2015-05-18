@@ -67,7 +67,9 @@ func preStopHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("PreStop handler invoked. The HTTP response will be returned in %q s", delay.Seconds())
 	fmt.Fprintf(w, "preStop handler invoked; waiting for %f s", delay.Seconds())
 
+	networkCheckHandler(w, r)
 	time.Sleep(delay)
+	networkCheckHandler(w, r)
 }
 
 func networkCheckHandler(w http.ResponseWriter, r *http.Request) {
